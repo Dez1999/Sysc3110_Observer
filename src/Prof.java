@@ -1,6 +1,6 @@
-/** SYSC 3110 - Prof-Student-TA Example
- * 
+/** SYSC 2101 - Prof-Student-TA Example
  *
+ * @author: Desmond Blake 101073534
  */
 
 import java.util.ArrayList;
@@ -10,11 +10,11 @@ import java.util.List;
 public class Prof {
 	private String name;
 	private Date midtermDate;
-	private List<CourseAnnouncementListener> courseAnnouncementListeners;    //Listener for Interface as a List(Good to be general, so it can change later)
+	private List<ProfListener> profListenerList; 	//ProfListener List
 
 	public Prof(String aName) {
 		this.name = aName;
-		this.courseAnnouncementListeners = new ArrayList<>();  //Initialization
+		this.profListenerList = new ArrayList<>();
 	}
 
 	public Date getMidterm() {
@@ -27,29 +27,36 @@ public class Prof {
 
 	public void setMidterm(Date date) {
 		this.midtermDate = date;
-		for(CourseAnnouncementListener cal: courseAnnouncementListeners) cal.handleMidtermDateSet(date);
+
+		for(ProfListener profL: profListenerList){
+			profL.handleMidtermSet(new ProfEvent(this, date));
+		}
 	}
-	
+
 	public void postponeMidterm(Date date){
 		this.midtermDate = date;
 
-		for(CourseAnnouncementListener cal: courseAnnouncementListeners)
-			cal.handleMidtermPostponed(date);
-	}
-
-	public void postAssignment(String text, Date deadLine){
-		for(CourseAnnouncementListener cal: courseAnnouncementListeners)
-			cal.handleAssignmentPosted(new CourseEvent(this, text, deadLine));
+		for(ProfListener profL: profListenerList){
+			profL.handleMidtermPostponed(new ProfEvent(this, date));
+		}
 	}
 
 	/**
 	 * Allows Prof class to talk about students and TA in a more general term, thus reduces coupling between classes.
-	 * @param cal CourseAnnouncementListener
+	 * Method: Adds a profListener to the Proflistener's List
+	 * @param profL profListenerList
 	 */
-	public void addCourseAnnouncementListener(CourseAnnouncementListener cal){
-		this.courseAnnouncementListeners.add(cal);
+	public void addProfListener(ProfListener profL){
+		this.profListenerList.add(profL);
 	}
 
+	/**
+	 * Removes a Listener from the ProfListener List
+	 * @param profL ProfListener
+	 */
+	public void removeProfListener(ProfListener profL){
+		this.profListenerList.remove(profL);
+	}
 
 	public static void main(String[] args) {
 
@@ -57,16 +64,29 @@ public class Prof {
 		Student s = new Student("Homer");
 		Student s2 = new Student("Bart");
 		TeachingAssistant ta = new TeachingAssistant("Michael");
-	
-	
-		p.addCourseAnnouncementListener(s);   //Student Class must implement CourseAnnouncementListener
-		p.addCourseAnnouncementListener(s2);
-		p.addCourseAnnouncementListener(ta);   //TA Class must implement CourseAnnouncementListener
-	
+
+
+		p.addProfListener(s);
+		p.addProfListener(s2);
+		p.addProfListener(ta);
+
+		//Add prof to student Instance
+		s.addProf(p);
+		s2.addProf(p);
+		ta.addProf(p);
+
 		Date midterm = new Date();
 		p.setMidterm(midterm);
-	
+
 		p.postponeMidterm(new Date(midterm.getTime() + 1000000000));
+
+
+		/**Added commands to test removeProfListener **/
+		System.out.println();
+		System.out.println("Testing: Student s will now be removed ")
+		;		p.removeProfListener(s);
+		Date midterm1 = new Date();
+		p.setMidterm(midterm1);
 	}
 
 }
