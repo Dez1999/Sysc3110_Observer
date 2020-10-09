@@ -40,4 +40,16 @@ public class Student implements CourseAnnouncementListener {
 	public void handleMidtermPostponed(Date date) {
 		party(date);
 	}
+
+	@Override
+	public void handleAssignmentPosted(CourseEvent ce) {
+		Object source = ce.getSource();
+		Prof p;
+		if (source instanceof Prof) {         //We are checking if the source is a prof.
+			p = (Prof) source;
+			System.out.println(p.getName());        //If it is a prof we print this line
+		}
+		
+
+	}
 }

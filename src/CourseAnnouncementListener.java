@@ -8,4 +8,5 @@ public interface CourseAnnouncementListener {
 
     void handleMidtermDateSet(Date date);       //handles an event:Midterm
     void handleMidtermPostponed(Date date);
+    void handleAssignmentPosted(CourseEvent ce);
 }

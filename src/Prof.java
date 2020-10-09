@@ -37,6 +37,11 @@ public class Prof {
 			cal.handleMidtermPostponed(date);
 	}
 
+	public void postAssignment(String text, Date deadLine){
+		for(CourseAnnouncementListener cal: courseAnnouncementListeners)
+			cal.handleAssignmentPosted(new CourseEvent(this, text, deadLine));
+	}
+
 	/**
 	 * Allows Prof class to talk about students and TA in a more general term, thus reduces coupling between classes.
 	 * @param cal CourseAnnouncementListener

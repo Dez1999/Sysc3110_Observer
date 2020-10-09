@@ -37,4 +37,9 @@ public class TeachingAssistant implements CourseAnnouncementListener{
 	public void handleMidtermPostponed(Date date) {
 		postpone(date);
 	}
+
+	@Override
+	public void handleAssignmentPosted(CourseEvent ce) {
+
+	}
 }
