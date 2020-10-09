@@ -1,11 +1,12 @@
-/** SYSC 2101 - Prof-Student-TA Example
+/** SYSC 3110 - Prof-Student-TA Example
  * 
  *
  */
 
 import java.util.Date;
 
-public class Student{
+//Implements the methods defined in CourseAnnouncementListener
+public class Student implements CourseAnnouncementListener {
 	private String name;
 	private Date midterm;
 
@@ -25,5 +26,18 @@ public class Student{
 	public void party(Date date){
 		this.midterm = date;
 		System.out.println(name + " : Alright! I get to party since my midterm isn't until " + this.midterm);
+	}
+
+	/**
+	 * Uses Inheritance Class: CourseAnnouncementListener
+	 **/
+	@Override
+	public void handleMidtermDateSet(Date date) {
+		study(date);    //Calls study to set date
+	}
+
+	@Override
+	public void handleMidtermPostponed(Date date) {
+		party(date);
 	}
 }

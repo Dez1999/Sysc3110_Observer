@@ -1,4 +1,4 @@
-/** SYSC 2101 - Prof-Student-TA Example
+/** SYSC 3110 - Prof-Student-TA Example
  * 
  *
  */
@@ -10,13 +10,11 @@ import java.util.List;
 public class Prof {
 	private String name;
 	private Date midtermDate;
-	private ArrayList<Student> students;
-	private TeachingAssistant ta;
-	private List<CourseAnnouncementListener> courseAnnouncementListeners;    //Listener for course Announcements
+	private List<CourseAnnouncementListener> courseAnnouncementListeners;    //Listener for Interface as a List(Good to be general, so it can change later)
 
 	public Prof(String aName) {
 		this.name = aName;
-		this.students = new ArrayList<Student>();
+		this.courseAnnouncementListeners = new ArrayList<>();  //Initialization
 	}
 
 	public Date getMidterm() {
@@ -29,26 +27,22 @@ public class Prof {
 
 	public void setMidterm(Date date) {
 		this.midtermDate = date;
-		for(Student s: this.students){
-			s.study(date);
-		}
-		ta.proctor(date);
+		for(CourseAnnouncementListener cal: courseAnnouncementListeners) cal.handleMidtermDateSet(date);
 	}
 	
 	public void postponeMidterm(Date date){
 		this.midtermDate = date;
-		for(Student s: this.students){
-			s.party(date);
-		}
-		ta.postpone(date);
+
+		for(CourseAnnouncementListener cal: courseAnnouncementListeners)
+			cal.handleMidtermPostponed(date);
 	}
-	
-	public void setTA(TeachingAssistant theTA){
-		this.ta = theTA;
-	}
-	
-	public void addStudent(Student s){
-		this.students.add(s);
+
+	/**
+	 * Allows Prof class to talk about students and TA in a more general term, thus reduces coupling between classes.
+	 * @param cal CourseAnnouncementListener
+	 */
+	public void addCourseAnnouncementListener(CourseAnnouncementListener cal){
+		this.courseAnnouncementListeners.add(cal);
 	}
 
 
@@ -60,9 +54,9 @@ public class Prof {
 		TeachingAssistant ta = new TeachingAssistant("Michael");
 	
 	
-		p.addStudent(s);
-		p.addStudent(s2);
-		p.setTA(ta);
+		p.addCourseAnnouncementListener(s);   //Student Class must implement CourseAnnouncementListener
+		p.addCourseAnnouncementListener(s2);
+		p.addCourseAnnouncementListener(ta);   //TA Class must implement CourseAnnouncementListener
 	
 		Date midterm = new Date();
 		p.setMidterm(midterm);
